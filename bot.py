@@ -12,7 +12,8 @@ updater.start_polling(allowed_updates=constants.UPDATE_ALL_TYPES)
 logger.warning('Bot started')
 
 enabled_funcs = [
-    (start, start.start_handler),
+    (version, version.version_handler),
+    (uptime,uptime.uptime_handler),
     (stats, stats.stats_handler),
     (antispam, antispam.channel_handler),
     (keyword_reply, keyword_reply.keyword_handler)
@@ -20,4 +21,4 @@ enabled_funcs = [
 
 for func, handler in enabled_funcs:
     dispatcher.add_handler(handler)
-    logger.warning('{} loaded'.format(str(func.__name__)))
+    logger.warning('{} loaded'.format(func.__name__))

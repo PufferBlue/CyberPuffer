@@ -1,7 +1,7 @@
 from telegram.ext import MessageHandler, Filters
 from functions import luck, keyword
 from utils import database
-from datetime import date
+from datetime import datetime
 
 def keyword_reply(update, context):
     if (update.message is not None):
@@ -9,7 +9,14 @@ def keyword_reply(update, context):
         # Special commands detection
         if update.message.text.startswith("/"):
             if update.message.text.startswith("/luck"):
-                luck_text = luck.get_luck(update.effective_user.id, date.today())
+                arg = update.message.text.partition(' ')
+                if arg[2] == '':
+                    name = update.effective_user.first_name
+                    if update.effective_user.last_name is not None:
+                        name += update.effective_user.last_name
+                else:
+                    name = arg[2]
+                luck_text = luck.get_luck_v2(update.effective_user.id, datetime.now(), name)
                 context.bot.send_message(chat_id=update.effective_chat.id, text=luck_text)
         reply = keyword.reply(update.message.text)
         if reply.type is not None:
