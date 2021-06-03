@@ -13,12 +13,11 @@ def get_luck(uid, date):
 from csv import reader
 def get_radical(word):
     dictionary_filepath = 'assets/xinhua.csv'
-    file = open(dictionary_filepath)
-    word_table = reader(file)
-    dictionary = {}
-    for line in word_table:
-        dictionary[line[0]] = line[1]
-    file.close()
+    with open(dictionary_filepath, newline='', encoding='utf-8') as f:
+        word_table = reader(f)
+        dictionary = {}
+        for line in word_table:
+            dictionary[line[0]] = line[1]
     word = word
     if word in dictionary:
         return dictionary[word]
