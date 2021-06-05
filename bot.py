@@ -12,7 +12,6 @@ updater.start_polling(allowed_updates=constants.UPDATE_ALL_TYPES)
 logger.warning('Bot started')
 
 enabled_funcs = [
-    (version, version.version_handler),
     (uptime,uptime.uptime_handler),
     (stats, stats.stats_handler),
     (antispam, antispam.channel_handler),

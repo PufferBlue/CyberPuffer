@@ -1,1 +1,1 @@
-__all__ = ["version","uptime","stats","antispam","keyword_reply"]
+__all__ = ["uptime","stats","antispam","keyword_reply"]

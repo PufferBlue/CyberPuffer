@@ -1,13 +1,13 @@
 from binascii import crc32, unhexlify
 
 def get_luck(uid, date):
-    seed = uid + date.year + date.month + date.day
+    seed = uid + date.year + date.month + date.day + (date.hour + 1) // 2
     width = seed.bit_length()
     width += 8 - ((width % 8) or 8)
     fmt = '%%0%dx' % (width // 4)
     s = unhexlify(fmt % seed)
     luck_level = crc32(s) % 5 + 1
-    luck_text = '今日人品：{}{}'.format('★' * luck_level, '☆' * (5 - luck_level))
+    luck_text = '当前人品：{}{}'.format('★' * luck_level, '☆' * (5 - luck_level))
     return luck_text
 
 from csv import reader
@@ -62,10 +62,10 @@ def get_luck_v2(uid, date, name):
     else:
         max_xing = '、'.join(i for i in name_scores if name_scores[i] == max_score)
 
-    ganzhi_text = '今日干支：{}{}年 {}{}月 {}{}日 {}{}时'.format(
+    ganzhi_text = '当前干支：{}{}年 {}{}月 {}{}日 {}{}时'.format(
     gans[year_gan],zhis[year_zhi],gans[month_gan],zhis[month_zhi],gans[day_gan],zhis[day_zhi],gans[hour_gan],zhis[hour_zhi])
     wuxing_text = '所属五行：{}'.format(max_xing)
 
-    text = '\n'.join([ganzhi_text, wuxing_text,get_luck(uid, date)])
+    text = '\n'.join([ganzhi_text, get_luck(uid, date)])
 
     return text
