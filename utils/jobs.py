@@ -1,30 +1,21 @@
 from utils.log import get_logger
+from weakref import WeakValueDictionary
+from traceback import print_exc
 
 logger = get_logger(name='Jobs')
+handler_list = WeakValueDictionary()
 
 def start_jobs(args):
-    job_status = {}
-    # Parse API source
-    for api_slice in args.api_list:
-        for item in api_slice.split(';'):
-            conf = {'config': item.strip(), 'proxy': args.proxy}
-            if item.strip().startswith('telegram:'):
-                if 'telegram' in job_status.keys():
-                    logger.warn('Duplicated Telegram API config detected')
-                else:
-                    from api.telegram import polling
-                    telegram_job = start_job(polling, conf)
-                    job_status['telegram'] = telegram_job
-            if item.strip().startswith('robot:'):
-                if 'robot' in job_status.keys():
-                    logger.warn('Duplicated robot API config detected')
-                else:
-                    from api.robot import polling
-                    robot_job = start_job(polling, conf)
-                    job_status['robot'] = robot_job
-
-def start_job(target, args):
-    from threading import Thread
-    t = Thread(target=target, args=[args])
-    t.start()
-    return t
+	for api_item in args.api_config:
+		name, _, config = api_item.strip().partition(':')
+		if name == 'telegram':
+			logger.info("Starting telegram job")
+			try:
+				from api.telegram import BotHandler
+				telegram_handler = BotHandler(config, proxy=args.proxy)
+				telegram_handler.init()
+				telegram_handler.start()
+			except:
+				logger.error("Telegram job start failed")
+				print_exc()
+				continue
